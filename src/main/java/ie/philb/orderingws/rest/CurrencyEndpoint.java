@@ -5,9 +5,9 @@
  */
 package ie.philb.orderingws.rest;
 
-import ie.philb.orderingws.model.Country;
+import ie.philb.orderingws.model.Currency;
 import ie.philb.orderingws.service.ServiceException;
-import ie.philb.orderingws.service.impl.CountryService;
+import ie.philb.orderingws.service.impl.CurrencyService;
 import java.util.Collections;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -15,25 +15,25 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-@Path("countries")
-public class CountryEndpoint {
+@Path("currency")
+public class CurrencyEndpoint {
 
-    CountryService countryService;
+    CurrencyService currencyService;
 
-    public CountryEndpoint() {
+    public CurrencyEndpoint() {
         try {
-            countryService = new CountryService();
+            currencyService = new CurrencyService();
         } catch (ServiceException nx) {
-            throw new RuntimeException("Failed to instantiate country service", nx);
+            throw new RuntimeException("Failed to instantiate currency service", nx);
         }
     }
 
     @GET
     @Produces({"application/xml", "application/json"})
-    public List<Country> listAll() {
+    public List<Currency> listAll() {
 
         try {
-            return countryService.list();
+            return currencyService.list();
         } catch (ServiceException sx) {
             return Collections.EMPTY_LIST;
         }
@@ -42,11 +42,12 @@ public class CountryEndpoint {
     @GET
     @Path("{id}")
     @Produces({"application/xml", "application/json"})
-    public Country getById(@PathParam("id") Long id) {
+    public Currency getById(@PathParam("id") Long id) {
         try {
-            return countryService.get(id);
+            return currencyService.get(id);
         } catch (ServiceException sx) {
             return null;
         }
     }
+
 }

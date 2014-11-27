@@ -26,5 +26,6 @@ public class ApplicationConfig extends Application {
         resources.add(ie.philb.orderingws.rest.AddressEndpoint.class);
         resources.add(ie.philb.orderingws.rest.AuthorEndpoint.class);
         resources.add(ie.philb.orderingws.rest.CountryEndpoint.class);
+        resources.add(ie.philb.orderingws.rest.CurrencyEndpoint.class);
     }
 }
