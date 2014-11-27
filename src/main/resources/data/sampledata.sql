@@ -1,3 +1,6 @@
+--
+-- 
+--
 INSERT INTO "address" (street1,street2,state,zipcode,countryid) VALUES (204,'P.O. Box 240, 6700 Amet Avenue','Franche-Comté','01300',250);
 INSERT INTO "address" (street1,street2,state,zipcode,countryid) VALUES (65,'5621 Semper, Rd.','PO','34435',250);
 INSERT INTO "address" (street1,street2,state,zipcode,countryid) VALUES (133,'4325 In Rd.','DN','F37 9KT',826);

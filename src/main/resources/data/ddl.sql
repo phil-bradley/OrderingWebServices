@@ -1,13 +1,22 @@
 
 drop table address;
 drop table country;
+drop table currency;
+
 
 create table country (
     id int primary key,
-    isocode char(2),
+    isocode char(2) unique,
     name varchar(255),
     printablename varchar(255),
-    iso3 char(3),
+    iso3 char(3) unique,
+    created timestamp,
+    lastupdated timestamp
+);
+
+create table currency (
+    code char(3) primary key,
+    name varchar(255),
     created timestamp,
     lastupdated timestamp
 );
