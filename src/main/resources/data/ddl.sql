@@ -1,3 +1,4 @@
+drop table product;
 drop table address;
 drop table party;
 drop table currency;
@@ -42,7 +43,13 @@ create table address (
     PARTYID int references party(id)
 );
 
-
+create table product (
+    id serial primary key,
+    skucode varchar(32) unique,
+    title varchar(255),
+    description varchar(2000),
+    unitprice decimal(20,2)
+);
 
 
 
