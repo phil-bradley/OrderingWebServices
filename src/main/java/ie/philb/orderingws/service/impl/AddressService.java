@@ -9,19 +9,13 @@ import ie.philb.orderingws.dao.AddressDao;
 import ie.philb.orderingws.dao.DaoException;
 import ie.philb.orderingws.dao.NoSuchEntityDaoException;
 import ie.philb.orderingws.model.Address;
-import ie.philb.orderingws.service.IAddressService;
 import ie.philb.orderingws.service.ServiceException;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.ejb.Stateless;
 import javax.jws.WebService;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
-@Stateless
-@WebService
-public class AddressService extends DefaultService implements IAddressService {
+@WebService(serviceName = "AddressService")
+public class AddressService extends DefaultService {
 
     private static final Logger logger = Logger.getLogger(AddressService.class.getSimpleName());
     private final AddressDao addressDao;
@@ -34,8 +28,7 @@ public class AddressService extends DefaultService implements IAddressService {
         addressDao = new AddressDao(ds);
     }
 
-    @Override
-    public List<Address> list() throws ServiceException {
+    public List<Address> listAddresses() throws ServiceException {
         try {
             return addressDao.list();
         } catch (DaoException ex) {
@@ -43,8 +36,7 @@ public class AddressService extends DefaultService implements IAddressService {
         }
     }
 
-    @Override
-    public Address get(Long id) throws ServiceException {
+    public Address getAddress(Long id) throws ServiceException {
         try {
             return addressDao.get(id);
         } catch (DaoException | NoSuchEntityDaoException ex) {
@@ -52,8 +44,7 @@ public class AddressService extends DefaultService implements IAddressService {
         }
     }
 
-    @Override
-    public int delete(Long id) throws ServiceException {
+    public int deleteAddress(Long id) throws ServiceException {
         try {
             return addressDao.delete(id);
         } catch (DaoException ex) {
@@ -61,8 +52,7 @@ public class AddressService extends DefaultService implements IAddressService {
         }
     }
 
-    @Override
-    public long create(Address country) throws ServiceException {
+    public long createAddress(Address country) throws ServiceException {
         try {
             return addressDao.create(country);
         } catch (DaoException ex) {
@@ -70,8 +60,7 @@ public class AddressService extends DefaultService implements IAddressService {
         }
     }
 
-    @Override
-    public int update(Address country) throws ServiceException {
+    public int updateAddress(Address country) throws ServiceException {
         try {
             return addressDao.update(country);
         } catch (DaoException | NoSuchEntityDaoException ex) {

@@ -5,26 +5,18 @@
  */
 package ie.philb.orderingws.service.impl;
 
-import ie.philb.orderingws.dao.CountryDao;
 import ie.philb.orderingws.dao.CurrencyDao;
 import ie.philb.orderingws.dao.DaoException;
 import ie.philb.orderingws.dao.NoSuchEntityDaoException;
 import ie.philb.orderingws.model.Currency;
-import ie.philb.orderingws.service.ICurrencyService;
 import ie.philb.orderingws.service.ServiceException;
 import java.util.List;
-import java.util.logging.Logger;
-import javax.ejb.Stateless;
+import javax.jws.WebMethod;
 import javax.jws.WebService;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
-@Stateless
-@WebService
-public class CurrencyService extends DefaultService implements ICurrencyService {
+@WebService(serviceName = "CurrencyService")
+public class CurrencyService extends DefaultService {
 
-    private static final Logger logger = Logger.getLogger(CurrencyService.class.getSimpleName());
     private final CurrencyDao currencyDao;
 
     public CurrencyService() throws ServiceException {
@@ -35,19 +27,21 @@ public class CurrencyService extends DefaultService implements ICurrencyService 
         currencyDao = new CurrencyDao(ds);
     }
 
-    @Override
-    public List<Currency> list() throws ServiceException {
+    @WebMethod
+    public List<Currency> getCurrencies() throws ServiceException {
+
         try {
             return currencyDao.list();
         } catch (DaoException ex) {
             throw new ServiceException(ex);
         }
+
     }
 
-    @Override
-    public Currency get(Long id) throws ServiceException {
+    @WebMethod
+    public Currency getCurrency(String code) throws ServiceException {
         try {
-            return currencyDao.get(id);
+            return currencyDao.get(code);
         } catch (DaoException | NoSuchEntityDaoException ex) {
             throw new ServiceException(ex);
         }

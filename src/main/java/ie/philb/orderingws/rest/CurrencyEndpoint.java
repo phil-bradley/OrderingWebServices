@@ -33,18 +33,18 @@ public class CurrencyEndpoint {
     public List<Currency> listAll() {
 
         try {
-            return currencyService.list();
+            return currencyService.getCurrencies();
         } catch (ServiceException sx) {
             return Collections.EMPTY_LIST;
         }
     }
 
     @GET
-    @Path("{id}")
+    @Path("{code}")
     @Produces({"application/xml", "application/json"})
-    public Currency getById(@PathParam("id") Long id) {
+    public Currency getById(@PathParam("code") String code) {
         try {
-            return currencyService.get(id);
+            return currencyService.getCurrency(code);
         } catch (ServiceException sx) {
             return null;
         }

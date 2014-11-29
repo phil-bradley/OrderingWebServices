@@ -9,19 +9,14 @@ import ie.philb.orderingws.dao.CountryDao;
 import ie.philb.orderingws.dao.DaoException;
 import ie.philb.orderingws.dao.NoSuchEntityDaoException;
 import ie.philb.orderingws.model.Country;
-import ie.philb.orderingws.service.ICountryService;
 import ie.philb.orderingws.service.ServiceException;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.jws.WebService;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
-@Stateless
-@WebService
-public class CountryService extends DefaultService implements ICountryService {
+@WebService(serviceName = "CountryService")
+public class CountryService extends DefaultService {
 
     private static final Logger logger = Logger.getLogger(CountryService.class.getSimpleName());
     private final CountryDao countryDao;
@@ -34,8 +29,7 @@ public class CountryService extends DefaultService implements ICountryService {
         countryDao = new CountryDao(ds);
     }
 
-    @Override
-    public List<Country> list() throws ServiceException {
+    public List<Country> listCountries() throws ServiceException {
         try {
             return countryDao.list();
         } catch (DaoException ex) {
@@ -43,8 +37,7 @@ public class CountryService extends DefaultService implements ICountryService {
         }
     }
 
-    @Override
-    public Country get(Long id) throws ServiceException {
+    public Country getCountryById(Long id) throws ServiceException {
         try {
             return countryDao.get(id);
         } catch (DaoException | NoSuchEntityDaoException ex) {
@@ -52,8 +45,7 @@ public class CountryService extends DefaultService implements ICountryService {
         }
     }
 
-    @Override
-    public int delete(Long id) throws ServiceException {
+    public int deleteCountry(Long id) throws ServiceException {
         try {
             return countryDao.delete(id);
         } catch (DaoException ex) {
@@ -61,8 +53,7 @@ public class CountryService extends DefaultService implements ICountryService {
         }
     }
 
-    @Override
-    public long create(Country country) throws ServiceException {
+    public long createCountry(Country country) throws ServiceException {
         try {
             return countryDao.create(country);
         } catch (DaoException ex) {
@@ -70,8 +61,7 @@ public class CountryService extends DefaultService implements ICountryService {
         }
     }
 
-    @Override
-    public int update(Country country) throws ServiceException {
+    public int updateCountry(Country country) throws ServiceException {
         try {
             return countryDao.update(country);
         } catch (DaoException | NoSuchEntityDaoException ex) {

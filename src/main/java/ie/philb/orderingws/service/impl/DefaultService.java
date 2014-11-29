@@ -18,7 +18,7 @@ import javax.sql.DataSource;
  */
 public class DefaultService {
 
-    private static final Logger logger = Logger.getLogger(DefaultService.class.getSimpleName());
+    protected static final Logger logger = Logger.getLogger(DefaultService.class.getSimpleName());
     protected DataSource ds;
     
     public DefaultService() throws ServiceException {

@@ -11,17 +11,14 @@ import ie.philb.orderingws.dao.NoSuchEntityDaoException;
 import ie.philb.orderingws.dao.PartyDao;
 import ie.philb.orderingws.model.Address;
 import ie.philb.orderingws.model.Party;
-import ie.philb.orderingws.service.IPartyService;
 import ie.philb.orderingws.service.ServiceException;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.ejb.Stateless;
 import javax.jws.WebService;
 
 
-@Stateless
-@WebService
-public class PartyService extends DefaultService implements IPartyService {
+@WebService(serviceName = "PartyService")
+public class PartyService extends DefaultService  {
 
     private static final Logger logger = Logger.getLogger(PartyService.class.getSimpleName());
     private final PartyDao partyDao;
@@ -36,7 +33,6 @@ public class PartyService extends DefaultService implements IPartyService {
         addressDao = new AddressDao(ds);
     }
 
-    @Override
     public List<Party> list() throws ServiceException {
 
         try {
@@ -53,7 +49,6 @@ public class PartyService extends DefaultService implements IPartyService {
         }
     }
 
-    @Override
     public Party get(Long id) throws ServiceException {
         try {
             Party p = partyDao.get(id);

@@ -182,6 +182,7 @@ public class JdbcTemplate {
                 results.add(t);
             }
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new JdbcException(sqlWithPlaceholders, ex);
         } finally {
             closeResources(conn, ps, rs);

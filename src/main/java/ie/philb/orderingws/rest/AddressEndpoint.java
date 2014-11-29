@@ -34,7 +34,7 @@ public class AddressEndpoint {
     public List<Address> listAll() {
 
         try {
-            return addressService.list();
+            return addressService.listAddresses();
         } catch (ServiceException sx) {
             return Collections.EMPTY_LIST;
         }
@@ -45,7 +45,7 @@ public class AddressEndpoint {
     @Produces({"application/xml", "application/json"})
     public Address getById(@PathParam("id") Long id) {
         try {
-            return addressService.get(id);
+            return addressService.getAddress(id);
         } catch (ServiceException sx) {
             return null;
         }

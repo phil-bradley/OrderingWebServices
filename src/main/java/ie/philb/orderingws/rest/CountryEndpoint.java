@@ -33,7 +33,7 @@ public class CountryEndpoint {
     public List<Country> listAll() {
 
         try {
-            return countryService.list();
+            return countryService.listCountries();
         } catch (ServiceException sx) {
             return Collections.EMPTY_LIST;
         }
@@ -44,7 +44,7 @@ public class CountryEndpoint {
     @Produces({"application/xml", "application/json"})
     public Country getById(@PathParam("id") Long id) {
         try {
-            return countryService.get(id);
+            return countryService.getCountryById(id);
         } catch (ServiceException sx) {
             return null;
         }
