@@ -20,33 +20,19 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-
 @Stateless
 @WebService
-public class CurrencyService implements ICurrencyService {
+public class CurrencyService extends DefaultService implements ICurrencyService {
 
     private static final Logger logger = Logger.getLogger(CurrencyService.class.getSimpleName());
-
     private final CurrencyDao currencyDao;
 
     public CurrencyService() throws ServiceException {
 
-        try {
-            logger.info("Getting initial context");
-            InitialContext cxt = new InitialContext();
+        super();
 
-            logger.info("Getting datasource");
-            DataSource ds = (DataSource) cxt.lookup("jdbc/ordering");
-
-            if (ds == null) {
-                throw new ServiceException("Failed to initialise Currency Service, DataSource not found");
-            }
-
-            logger.info("Creating dao");
-            currencyDao = new CurrencyDao(ds);
-        } catch (NamingException nx) {
-            throw new ServiceException("Failed to initialise Currency Service", nx);
-        }
+        logger.info("Creating dao");
+        currencyDao = new CurrencyDao(ds);
     }
 
     @Override

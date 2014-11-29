@@ -6,9 +6,9 @@
 package ie.philb.orderingws.rest;
 
 import ie.philb.orderingws.model.Address;
-import ie.philb.orderingws.model.Country;
+import ie.philb.orderingws.model.Party;
 import ie.philb.orderingws.service.ServiceException;
-import ie.philb.orderingws.service.impl.AddressService;
+import ie.philb.orderingws.service.impl.PartyService;
 import java.util.Collections;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -16,25 +16,25 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-@Path("addresses")
-public class AddressEndpoint {
+@Path("parties")
+public class PartyEndpoint {
 
-    private AddressService addressService;
+    private PartyService partyService;
 
-    public AddressEndpoint() {
+    public PartyEndpoint() {
         try {
-            addressService = new AddressService();
+            partyService = new PartyService();
         } catch (ServiceException nx) {
-            throw new RuntimeException("Failed to instantiate address service", nx);
+            throw new RuntimeException("Failed to instantiate party service", nx);
         }
     }
 
     @GET
     @Produces({"application/xml", "application/json"})
-    public List<Address> listAll() {
+    public List<Party> listAll() {
 
         try {
-            return addressService.list();
+            return partyService.list();
         } catch (ServiceException sx) {
             return Collections.EMPTY_LIST;
         }
@@ -43,9 +43,9 @@ public class AddressEndpoint {
     @GET
     @Path("{id}")
     @Produces({"application/xml", "application/json"})
-    public Address getById(@PathParam("id") Long id) {
+    public Party getById(@PathParam("id") Long id) {
         try {
-            return addressService.get(id);
+            return partyService.get(id);
         } catch (ServiceException sx) {
             return null;
         }

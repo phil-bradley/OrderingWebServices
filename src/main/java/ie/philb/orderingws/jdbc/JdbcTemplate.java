@@ -126,7 +126,7 @@ public class JdbcTemplate {
         return queryResultList(sql, new JdbcParameterSet(), mapper);
     }
 
-    private <T> List<T> queryResultList(String sql, JdbcParameterSet parameterSet, RowMapper<T> mapper) throws JdbcException {
+    public <T> List<T> queryResultList(String sql, JdbcParameterSet parameterSet, RowMapper<T> mapper) throws JdbcException {
 
         List<T> results = new ArrayList<>();
 

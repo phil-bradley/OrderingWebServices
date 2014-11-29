@@ -21,29 +21,17 @@ import javax.sql.DataSource;
 
 @Stateless
 @WebService
-public class CountryService implements ICountryService {
+public class CountryService extends DefaultService implements ICountryService {
 
     private static final Logger logger = Logger.getLogger(CountryService.class.getSimpleName());
     private final CountryDao countryDao;
 
     public CountryService() throws ServiceException {
 
-        try {
-            logger.info("Getting initial context");
-            InitialContext cxt = new InitialContext();
-
-            logger.info("Getting datasource");
-            DataSource ds = (DataSource) cxt.lookup("jdbc/ordering");
-
-            if (ds == null) {
-                throw new ServiceException("Failed to initialise AddressService, DataSource not found");
-            }
-
-            logger.info("Creating dao");
-            countryDao = new CountryDao(ds);
-        } catch (NamingException nx) {
-            throw new ServiceException("Failed to initialise CountryService", nx);
-        }
+        super();
+        
+        logger.info("Creating dao");
+        countryDao = new CountryDao(ds);
     }
 
     @Override

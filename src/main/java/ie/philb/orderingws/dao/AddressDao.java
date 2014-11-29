@@ -126,6 +126,25 @@ public class AddressDao extends AbstractDao<Address> {
         }
     }
 
+    public List<Address> getByPartyId(long partyId) throws DaoException {
+        try {
+            JdbcParameterSet params = new JdbcParameterSet();
+            params.add("partyid", partyId);
+
+            List<Address> addresses = getJdbcTemplate().queryResultList("SELECT * FROM address WHERE partyid = :partyid", params, addressMapper);
+
+            for (Address address : addresses) {
+                Country country = cachingDao.getCountry(address.getCountry().getId());
+                address.setCountry(country);
+            }
+
+            return addresses;
+
+        } catch (JdbcException jdx) {
+            throw new DaoException("Failed to get addresses by partyid", jdx);
+        }
+    }
+
     class AddressMapper implements RowMapper<Address>, EntityMapper<Address> {
 
         @Override

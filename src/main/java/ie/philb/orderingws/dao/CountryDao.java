@@ -92,7 +92,7 @@ public class CountryDao extends AbstractDao<Country> {
         try {
             return getJdbcTemplate().executeUpdate(sql, params);
         } catch (JdbcException jdx) {
-            throw new DaoException("Failed to delete country count", jdx);
+            throw new DaoException("Failed to delete country ", jdx);
         }
     }
 

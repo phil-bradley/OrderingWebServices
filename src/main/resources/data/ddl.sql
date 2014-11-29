@@ -1,8 +1,7 @@
-drop table partyaddress;
-drop table party;
 drop table address;
-drop table country;
+drop table party;
 drop table currency;
+drop table country;
 
 
 create table country (
@@ -22,16 +21,6 @@ create table currency (
     lastupdated timestamp
 );
 
-create table address (
-    id serial primary key,
-    STREET1 varchar(255), 
-    STREET2 varchar(255), 
-    STATE varchar(32),  
-    ZIPCODE varchar(32), 
-    created timestamp,
-    lastupdated timestamp,
-    COUNTRYID int references country(id)
-);
 
 create table party (
     id serial primary key,
@@ -41,11 +30,19 @@ create table party (
     email varchar(255)
 );
 
-
-create table partyaddress (
-    addressid bigint references address(id),
-    partyid bigint references party(id),
-    primary key (addressid, partyid)
+create table address (
+    id serial primary key,
+    STREET1 varchar(255), 
+    STREET2 varchar(255), 
+    STATE varchar(32),  
+    ZIPCODE varchar(32), 
+    created timestamp,
+    lastupdated timestamp,
+    COUNTRYID int references country(id),
+    PARTYID int references party(id)
 );
+
+
+
 
 
