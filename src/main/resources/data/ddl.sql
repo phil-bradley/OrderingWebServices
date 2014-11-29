@@ -1,4 +1,5 @@
-
+drop table partyaddress;
+drop table party;
 drop table address;
 drop table country;
 drop table currency;
@@ -31,3 +32,20 @@ create table address (
     lastupdated timestamp,
     COUNTRYID int references country(id)
 );
+
+create table party (
+    id serial primary key,
+    name varchar(255),
+    phone varchar(32),
+    fax varchar(32),
+    email varchar(255)
+);
+
+
+create table partyaddress (
+    addressid bigint references address(id),
+    partyid bigint references party(id),
+    primary key (addressid, partyid)
+);
+
+
