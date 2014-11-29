@@ -5,10 +5,9 @@
  */
 package ie.philb.orderingws.rest;
 
-import ie.philb.orderingws.model.Address;
-import ie.philb.orderingws.model.Party;
+import ie.philb.orderingws.model.Product;
 import ie.philb.orderingws.service.ServiceException;
-import ie.philb.orderingws.service.impl.PartyService;
+import ie.philb.orderingws.service.impl.ProductService;
 import java.util.Collections;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -16,38 +15,40 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-@Path("parties")
-public class PartyEndpoint {
+@Path("products")
+public class ProductEndpoint {
 
-    private PartyService partyService;
+    private ProductService productService;
 
-    public PartyEndpoint() {
+    public ProductEndpoint() {
         try {
-            partyService = new PartyService();
-        } catch (ServiceException nx) {
-            throw new RuntimeException("Failed to instantiate party service", nx);
+            productService = new ProductService();
+        } catch (ServiceException sx) {
+            throw new RuntimeException("Failed to instantiate product service", sx);
+
         }
     }
 
     @GET
     @Produces({"application/xml", "application/json"})
-    public List<Party> listAll() {
+    public List<Product> listAll() {
 
         try {
-            return partyService.getParties();
+            return productService.getProducts();
         } catch (ServiceException sx) {
             return Collections.EMPTY_LIST;
         }
     }
 
     @GET
-    @Path("{id}")
+    @Path("{skucode}")
     @Produces({"application/xml", "application/json"})
-    public Party getById(@PathParam("id") Long id) {
+    public Product getBySkuCode(@PathParam("skucode") String skucode) {
         try {
-            return partyService.getParty(id);
+            return productService.getProductBySkuCode(skucode);
         } catch (ServiceException sx) {
             return null;
         }
     }
+
 }

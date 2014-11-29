@@ -173,4 +173,8 @@ public class Money {
     public Money divide(Double b) {
         return divide(new Money(b));
     }
+    
+    public BigDecimal asBigDecimal() {
+        return value;
+    }
 }

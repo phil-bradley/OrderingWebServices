@@ -33,7 +33,7 @@ public class PartyService extends DefaultService  {
         addressDao = new AddressDao(ds);
     }
 
-    public List<Party> list() throws ServiceException {
+    public List<Party> getParties() throws ServiceException {
 
         try {
             List<Party> parties = partyDao.list();
@@ -49,7 +49,7 @@ public class PartyService extends DefaultService  {
         }
     }
 
-    public Party get(Long id) throws ServiceException {
+    public Party getParty(Long id) throws ServiceException {
         try {
             Party p = partyDao.get(id);
 
