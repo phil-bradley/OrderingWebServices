@@ -60,7 +60,9 @@ public class JdbcTemplate {
 
         T t = null;
 
-        Map<Integer, String> parametersNamesByIndex = getParameterNamesByIndex(sql);
+        String normalisedSql = normalise(sql);
+
+        Map<Integer, String> parametersNamesByIndex = getParameterNamesByIndex(normalisedSql);
         Map<Integer, JdbcParameter> parametersByIndex = new HashMap<>();
 
         for (Integer index : parametersNamesByIndex.keySet()) {
@@ -73,7 +75,7 @@ public class JdbcTemplate {
             }
         }
 
-        String sqlWithPlaceholders = namedParametersToPlaceholders(sql);
+        String sqlWithPlaceholders = namedParametersToPlaceholders(normalisedSql);
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -129,9 +131,11 @@ public class JdbcTemplate {
 
     public <T> List<T> queryResultList(String sql, JdbcParameterSet parameterSet, RowMapper<T> mapper) throws JdbcException {
 
+        String normalisedSql = normalise(sql);
+
         List<T> results = new ArrayList<>();
 
-        Map<Integer, String> parametersNamesByIndex = getParameterNamesByIndex(sql);
+        Map<Integer, String> parametersNamesByIndex = getParameterNamesByIndex(normalisedSql);
         Map<Integer, JdbcParameter> parametersByIndex = new HashMap<>();
 
         for (Integer index : parametersNamesByIndex.keySet()) {
@@ -144,7 +148,7 @@ public class JdbcTemplate {
             }
         }
 
-        String sqlWithPlaceholders = namedParametersToPlaceholders(sql);
+        String sqlWithPlaceholders = namedParametersToPlaceholders(normalisedSql);
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -195,9 +199,11 @@ public class JdbcTemplate {
 
     public long executeInsert(String sql, JdbcParameterSet parameterSet) throws JdbcException {
 
+        String normalisedSql = normalise(sql);
+                
         long id = 0;
 
-        Map<Integer, String> parametersNamesByIndex = getParameterNamesByIndex(sql);
+        Map<Integer, String> parametersNamesByIndex = getParameterNamesByIndex(normalisedSql);
         Map<Integer, JdbcParameter> parametersByIndex = new HashMap<>();
 
         for (Integer index : parametersNamesByIndex.keySet()) {
@@ -210,7 +216,7 @@ public class JdbcTemplate {
             }
         }
 
-        String sqlWithPlaceholders = namedParametersToPlaceholders(sql);
+        String sqlWithPlaceholders = namedParametersToPlaceholders(normalisedSql);
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -260,8 +266,42 @@ public class JdbcTemplate {
         return id;
     }
 
+    public Long createEntity(String entityName, JdbcParameterSet parameterSet) throws JdbcException {
+        String sql = "INSERT INTO __ENTITY__ (__FIELDS__) VALUES (__VALUES__) ";
+
+        String fieldNames = "";
+        String fieldPlaceholders = "";
+
+        for (JdbcParameter parameter : parameterSet.getParameters()) {
+
+            if (!fieldNames.isEmpty()) {
+                fieldNames += ", ";
+                fieldPlaceholders += ", ";
+            }
+            fieldNames += parameter.getKey();
+            fieldPlaceholders += ":" + parameter.getKey();
+        }
+
+        sql = sql.replace("__FIELDS__", fieldNames);
+        sql = sql.replace("__VALUES__", fieldPlaceholders);
+        sql = sql.replace("__ENTITY__", entityName);
+
+        UpdateResponseBean response = executeUpdate(sql, parameterSet, true);
+        return response.generatedKey;
+    }
+
     public int executeUpdate(String sql, JdbcParameterSet parameterSet) throws JdbcException {
-        Map<Integer, String> parametersNamesByIndex = getParameterNamesByIndex(sql);
+        UpdateResponseBean r = executeUpdate(sql, parameterSet, false);
+        return r.returnValue;
+    }
+
+    private UpdateResponseBean executeUpdate(String sql, JdbcParameterSet parameterSet, boolean returnGeneratedKey) throws JdbcException {
+
+        String normalisedSql = normalise(sql);
+        
+        UpdateResponseBean response = new UpdateResponseBean();
+
+        Map<Integer, String> parametersNamesByIndex = getParameterNamesByIndex(normalisedSql);
         Map<Integer, JdbcParameter> parametersByIndex = new HashMap<>();
 
         for (Integer index : parametersNamesByIndex.keySet()) {
@@ -274,7 +314,7 @@ public class JdbcTemplate {
             }
         }
 
-        String sqlWithPlaceholders = namedParametersToPlaceholders(sql);
+        String sqlWithPlaceholders = namedParametersToPlaceholders(normalisedSql);
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -282,11 +322,10 @@ public class JdbcTemplate {
 
         try {
             conn = ds.getConnection();
-            ps = conn.prepareStatement(sqlWithPlaceholders);
 
-            if (limit > 0) {
-                ps.setMaxRows(limit);
-            }
+            int GENERATED_KEYS_BEHAVIOUR = returnGeneratedKey ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS;
+
+            ps = conn.prepareStatement(sqlWithPlaceholders, GENERATED_KEYS_BEHAVIOUR);
 
             for (Integer index : parametersByIndex.keySet()) {
                 JdbcParameter parameter = parametersByIndex.get(index);
@@ -307,12 +346,23 @@ public class JdbcTemplate {
                 }
             }
 
-            return ps.executeUpdate();
+            response.returnValue = ps.executeUpdate();
+
+            if (returnGeneratedKey) {
+                rs = ps.getGeneratedKeys();
+
+                if (rs.next()) {
+                    response.generatedKey = rs.getLong(1);
+                }
+            }
+
         } catch (SQLException ex) {
             throw new JdbcException(sqlWithPlaceholders, ex);
         } finally {
             closeResources(conn, ps, rs);
         }
+
+        return response;
     }
 
     private void closeResources(Connection conn, Statement st, ResultSet rs) {
@@ -371,7 +421,8 @@ public class JdbcTemplate {
         for (String token : tokens) {
 
             if (token.startsWith(":")) {
-                parametersByIndex.put(index, token.substring(1));
+                String field = token.substring(1);
+                parametersByIndex.put(index, field);
                 index++;
             }
         }
@@ -395,5 +446,19 @@ public class JdbcTemplate {
         }
 
         return sqlWithPlaceholders.toString().trim();
+    }
+
+    private String normalise(String sql) {
+        String normalisedSql = sql;
+        normalisedSql = normalisedSql.replace(",", " , ");
+        normalisedSql = normalisedSql.replace(")", " ) ");
+        normalisedSql = normalisedSql.replace("(", " ( ");
+        return normalisedSql;
+    }
+
+    class UpdateResponseBean {
+
+        int returnValue;
+        Long generatedKey;
     }
 }

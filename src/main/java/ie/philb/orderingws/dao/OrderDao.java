@@ -18,6 +18,7 @@ import ie.philb.orderingws.model.Party;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.sql.DataSource;
@@ -38,6 +39,15 @@ public class OrderDao {
     }
 
     public Order get(Long id) throws DaoException, NoSuchEntityDaoException {
+        Order order = getHeader(id);
+
+        List<OrderDetail> details = getOrderDetails(id);
+        order.getDetail().addAll(details);
+
+        return order;
+    }
+
+    public Order getHeader(Long id) throws DaoException, NoSuchEntityDaoException {
         try {
             JdbcParameterSet params = new JdbcParameterSet();
             params.add("id", id);
@@ -59,9 +69,9 @@ public class OrderDao {
             JdbcParameterSet params = new JdbcParameterSet();
             params.add("BUYERID", buyerId);
 
-            orders = getJdbcTemplate().queryResultList("SELECT * FROM order WHERE buyerid = :BUYERID", params, orderMapper);
+            orders = getJdbcTemplate().queryResultList("SELECT * FROM orderheader WHERE buyerid = :BUYERID", params, orderMapper);
 
-            List<OrderDetail> details = getJdbcTemplate().queryResultList("SELECT * FROM orderdetail WHERE orderid IN (SELECT id FROM order WHERE buyerid = :BUYERID)", params, orderDetailMapper);
+            List<OrderDetail> details = getJdbcTemplate().queryResultList("SELECT * FROM orderdetail WHERE orderid IN (SELECT id FROM orderheader WHERE buyerid = :BUYERID)", params, orderDetailMapper);
 
             for (Order order : orders) {
                 for (OrderDetail detail : details) {
@@ -86,6 +96,50 @@ public class OrderDao {
             throw new DaoException("Failed to get order details", jdx);
         }
 
+    }
+
+    public Long createDetail() throws DaoException {
+        try {
+            JdbcParameterSet params = new JdbcParameterSet();
+            params.add("CREATED", new Date());
+
+            Long detailId = getJdbcTemplate().createEntity("orderdetail", params);
+            return detailId;
+        } catch (JdbcException jdx) {
+            throw new DaoException("Failed to create order detail", jdx);
+        }
+    }
+
+    public Long createOrder() throws DaoException {
+
+        try {
+            JdbcParameterSet params = new JdbcParameterSet();
+
+            params.add("CREATED", new Date());
+
+            Long detailId = getJdbcTemplate().createEntity("order", params);
+            return detailId;
+        } catch (JdbcException jdx) {
+            throw new DaoException("Failed to create order", jdx);
+        }
+    }
+
+    public int updateDetail(OrderDetail detail) throws DaoException, NoSuchEntityDaoException {
+
+        String sql = "UPDATE orderdetail SET ";
+        sql += "SKUCODE = :SKUCODE, ";
+        sql += "DESCRIPTION = :DESCRIPTION, ";
+        sql += "QUANTITY = :QUANTITY, ";
+        sql += "UNITPRICE = :UNITPRICE, ";
+        sql += "LINETOTAL = :LINETOTAL, ";
+        sql += "ORDERID = :ORDERID ";
+        sql += "WHERE ID = :ID ";
+
+        try {
+            return getJdbcTemplate().executeUpdate(sql, orderDetailMapper.getParameterSet(detail));
+        } catch (JdbcException jdx) {
+            throw new DaoException("Failed to update order detail", jdx);
+        }
     }
 
     class OrderMapper implements RowMapper<Order>, EntityMapper<Order> {
@@ -126,7 +180,7 @@ public class OrderDao {
             detail.setUnitPrice(new Money(rs.getBigDecimal("UNITPRICE")));
             detail.setLineTotal(new Money(rs.getBigDecimal("LINETOTAL")));
             detail.setOrderId(rs.getLong("ORDERID"));
-
+            detail.setDescription(rs.getString("DESCRIPTION"));
             return detail;
         }
 
@@ -136,6 +190,7 @@ public class OrderDao {
             parameters.add("ID", detail.getId());
             parameters.add("SKUCODE", detail.getSkuCode());
             parameters.add("QUANTITY", detail.getQuantity());
+            parameters.add("DESCRIPTION", detail.getDescription());
             parameters.add("UNITPRICE", detail.getUnitPrice().asBigDecimal());
             parameters.add("LINETOTAL", detail.getLineTotal().asBigDecimal());
             parameters.add("ORDERID", detail.getOrderId());

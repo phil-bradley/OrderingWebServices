@@ -1,3 +1,6 @@
+
+drop table orderdetail;
+drop table orderheader;
 drop table product;
 drop table address;
 drop table party;
@@ -53,13 +56,14 @@ create table product (
 
 create table orderheader (
     id serial primary key,
-    timestamp created,
-    timestamp submitted,
-    bigint buyerid references party(id)
+    created timestamp ,
+    submitted timestamp ,
+    buyerid bigint references party(id)
 )
 
 create table orderdetail (
     id serial primary key,
+    created timestamp ,
     orderid bigint references orderheader(id),
     skucode varchar(32),
     description varchar(255),

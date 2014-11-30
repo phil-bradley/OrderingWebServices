@@ -9,18 +9,16 @@ import ie.philb.orderingws.dao.DaoException;
 import ie.philb.orderingws.dao.NoSuchEntityDaoException;
 import ie.philb.orderingws.dao.OrderDao;
 import ie.philb.orderingws.dao.PartyDao;
-import ie.philb.orderingws.model.Address;
 import ie.philb.orderingws.model.Order;
+import ie.philb.orderingws.model.OrderDetail;
 import ie.philb.orderingws.model.Party;
 import ie.philb.orderingws.service.ServiceException;
 import static ie.philb.orderingws.service.impl.DefaultService.logger;
 import java.util.ArrayList;
 import java.util.List;
+import javax.jws.WebService;
 
-/**
- *
- * @author philb
- */
+@WebService(serviceName = "OrderService")
 public class OrderService extends DefaultService {
 
     private final PartyDao partyDao;
@@ -48,9 +46,9 @@ public class OrderService extends DefaultService {
     }
 
     public List<Order> getOrdersByBuyer(Long buyerId) throws ServiceException {
-        
+
         List<Order> orders = new ArrayList<>();
-        
+
         try {
             Party buyer = partyDao.get(buyerId);
             orders = orderDao.getOrdersByBuyer(buyerId);
@@ -63,7 +61,34 @@ public class OrderService extends DefaultService {
             throw new ServiceException(ex);
 
         }
-        
+
         return orders;
     }
+
+    public Order save(Order order) throws ServiceException {
+
+        try {
+            if (order.getId() == 0) {
+                Long orderId = orderDao.createOrder();
+                order.setId(orderId);
+
+            }
+
+            for (OrderDetail detail : order.getDetail()) {
+                if (detail.getId() == 0) {
+                    Long detailId = orderDao.createDetail();
+                    detail.setId(detailId);
+                } else {
+                    orderDao.updateDetail(detail);
+                }
+            }
+
+            return order;
+
+        } catch (DaoException | NoSuchEntityDaoException dx) {
+            throw new ServiceException("Failed to save order", dx);
+        }
+
+    }
+
 }
