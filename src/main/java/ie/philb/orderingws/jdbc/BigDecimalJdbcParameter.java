@@ -16,24 +16,24 @@ public class BigDecimalJdbcParameter extends JdbcParameter<BigDecimal> {
         this.value = value;
     }
 
-    @Override
-    public String getValueAsString() {
-        return value.toPlainString();
-    }
+//    @Override
+//    public String getValueAsString() {
+//        return value.toPlainString();
+//    }
+//
+//    @Override
+//    public String getEscapedValue() {
+//        return getValueAsString();
+//    }
+//
+//    @Override
+//    public String getValueForEmbedding() {
+//        return getValueAsString();
+//    }
 
     @Override
     public BigDecimal getValue() {
         return value;
-    }
-
-    @Override
-    public String getEscapedValue() {
-        return getValueAsString();
-    }
-
-    @Override
-    public String getValueForEmbedding() {
-        return getValueAsString();
     }
 
 }

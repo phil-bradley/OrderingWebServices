@@ -19,23 +19,23 @@ public class LongJdbcParameter extends JdbcParameter<Long> {
         this.value = new Long(value);
     }
 
-    @Override
-    public String getValueAsString() {
-        return value.toString();
-    }
+//    @Override
+//    public String getValueAsString() {
+//        return value.toString();
+//    }
+//
+//    @Override
+//    public String getEscapedValue() {
+//        return getValueAsString();
+//    }
+//
+//    @Override
+//    public String getValueForEmbedding() {
+//        return getValueAsString();
+//    }
 
     @Override
     public Long getValue() {
         return value;
-    }
-
-    @Override
-    public String getEscapedValue() {
-        return getValueAsString();
-    }
-
-    @Override
-    public String getValueForEmbedding() {
-        return getValueAsString();
     }
 }

@@ -18,23 +18,23 @@ public class StringJdbcParameter extends JdbcParameter<String> {
         this.value = value;
     }
 
-    @Override
-    public String getValueAsString() {
-        return value;
-    }
+//    @Override
+//    public String getValueAsString() {
+//        return value;
+//    }
+//
+//    @Override
+//    public String getEscapedValue() {
+//        return getValueAsString().replaceAll("'", "''");
+//    }
+//
+//    @Override
+//    public String getValueForEmbedding() {
+//        return "'" + getEscapedValue() + "'";
+//    }
 
     @Override
     public String getValue() {
         return value;
-    }
-
-    @Override
-    public String getEscapedValue() {
-        return getValueAsString().replaceAll("'", "''");
-    }
-
-    @Override
-    public String getValueForEmbedding() {
-        return "'" + getEscapedValue() + "'";
     }
 }

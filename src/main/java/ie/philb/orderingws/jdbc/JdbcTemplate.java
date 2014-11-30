@@ -101,7 +101,8 @@ public class JdbcTemplate {
                 }
 
                 if (parameter instanceof StringJdbcParameter) {
-                    ps.setString(index, parameter.getValueAsString());
+                    StringJdbcParameter sdp = (StringJdbcParameter) parameter;
+                    ps.setString(index, sdp.getValue());
                 }
             }
 
@@ -171,7 +172,8 @@ public class JdbcTemplate {
                 }
 
                 if (parameter instanceof StringJdbcParameter) {
-                    ps.setString(index, parameter.getValueAsString());
+                    StringJdbcParameter sdp = (StringJdbcParameter) parameter;
+                    ps.setString(index, sdp.getValue());
                 }
             }
 
@@ -236,7 +238,8 @@ public class JdbcTemplate {
                 }
 
                 if (parameter instanceof StringJdbcParameter) {
-                    ps.setString(index, parameter.getValueAsString());
+                    StringJdbcParameter sdp = (StringJdbcParameter) parameter;
+                    ps.setString(index, sdp.getValue());
                 }
             }
 
@@ -299,7 +302,8 @@ public class JdbcTemplate {
                 }
 
                 if (parameter instanceof StringJdbcParameter) {
-                    ps.setString(index, parameter.getValueAsString());
+                    StringJdbcParameter sdp = (StringJdbcParameter) parameter;
+                    ps.setString(index, sdp.getValue());
                 }
             }
 
@@ -353,38 +357,9 @@ public class JdbcTemplate {
         }
     }
 
-    private String applyParameters(String sql, Set<JdbcParameter> parameters) throws Exception {
-
-        String subbed = sql;
-
-        if (parameters == null) {
-            return subbed;
-        }
-
-        for (JdbcParameter p : parameters) {
-            if (containsParameter(sql, p)) {
-                subbed = applyParameter(subbed, p);
-            } else {
-                throw new Exception("Unrecognised parameter index -->" + p.getKey() + "<--");
-            }
-        }
-
-        if (subbed.contains(":")) {
-            throw new Exception("Unmatched parameter in sql");
-        }
-
-        return subbed;
-    }
-
     private <T> boolean containsParameter(String sql, JdbcParameter<T> p) {
         String k = ":" + p.getKey();
         return sql.contains(k);
-    }
-
-    private <T> String applyParameter(String sql, JdbcParameter<T> p) {
-        String k = ":" + p.getKey();
-        String toEmbed = p.getValueForEmbedding();
-        return sql.replace(k, toEmbed);
     }
 
     private Map<Integer, String> getParameterNamesByIndex(String sql) {

@@ -7,6 +7,7 @@ package ie.philb.orderingws.jdbc;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,6 +37,10 @@ public class JdbcParameterSet {
 
     public void add(String key, BigDecimal value) {
         parameters.add(new BigDecimalJdbcParameter(key, value));
+    }
+
+    public void add(String key, Date value) {
+        parameters.add(new DateJdbcParameter(key, value));
     }
 
     private boolean containsKey(String key) {

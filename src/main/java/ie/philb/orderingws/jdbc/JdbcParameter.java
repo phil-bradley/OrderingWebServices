@@ -21,11 +21,11 @@ public abstract class JdbcParameter<T> {
         return key;
     }
 
-    public abstract String getEscapedValue();
-    
-    public abstract String getValueForEmbedding();
-    
-    public abstract String getValueAsString();
+//    public abstract String getEscapedValue();
+//    
+//    public abstract String getValueForEmbedding();
+//    
+//    public abstract String getValueAsString();
     
     public abstract T getValue();
 }
