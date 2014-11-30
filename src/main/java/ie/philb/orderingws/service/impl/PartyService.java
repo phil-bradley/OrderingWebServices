@@ -20,7 +20,6 @@ import javax.jws.WebService;
 @WebService(serviceName = "PartyService")
 public class PartyService extends DefaultService  {
 
-    private static final Logger logger = Logger.getLogger(PartyService.class.getSimpleName());
     private final PartyDao partyDao;
     private final AddressDao addressDao;
 

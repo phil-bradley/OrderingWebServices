@@ -51,5 +51,21 @@ create table product (
     unitprice decimal(20,2)
 );
 
+create table orderheader (
+    id serial primary key,
+    timestamp created,
+    timestamp submitted,
+    bigint buyerid references party(id)
+)
+
+create table orderdetail (
+    id serial primary key,
+    orderid bigint references orderheader(id),
+    skucode varchar(32),
+    description varchar(255),
+    unitprice decimal(20,2),
+    quantity int,
+    linetotal decimal(12,2)
+)
 
 

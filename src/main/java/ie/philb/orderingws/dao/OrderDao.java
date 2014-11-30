@@ -17,7 +17,9 @@ import ie.philb.orderingws.model.OrderDetail;
 import ie.philb.orderingws.model.Party;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.sql.DataSource;
 import lombok.NonNull;
 
@@ -47,6 +49,33 @@ public class OrderDao {
         } catch (NoSuchEntityException nx) {
             throw new NoSuchEntityDaoException("Failed to get order " + id);
         }
+    }
+
+    public List<Order> getOrdersByBuyer(Long buyerId) throws DaoException {
+
+        List<Order> orders = new ArrayList<>();
+
+        try {
+            JdbcParameterSet params = new JdbcParameterSet();
+            params.add("BUYERID", buyerId);
+
+            orders = getJdbcTemplate().queryResultList("SELECT * FROM order WHERE buyerid = :BUYERID", params, orderMapper);
+
+            List<OrderDetail> details = getJdbcTemplate().queryResultList("SELECT * FROM orderdetail WHERE orderid IN (SELECT id FROM order WHERE buyerid = :BUYERID)", params, orderDetailMapper);
+
+            for (Order order : orders) {
+                for (OrderDetail detail : details) {
+                    if (Objects.equals(detail.getOrderId(), order.getId())) {
+                        order.getDetail().add(detail);
+                    }
+                }
+            }
+
+        } catch (JdbcException jdx) {
+            throw new DaoException(("Failed to get orders for buyer " + buyerId), jdx);
+        }
+
+        return orders;
     }
 
     private List<OrderDetail> getOrderDetails(Long orderId) throws DaoException {
@@ -96,6 +125,7 @@ public class OrderDao {
             detail.setQuantity(rs.getInt("QUANTITY"));
             detail.setUnitPrice(new Money(rs.getBigDecimal("UNITPRICE")));
             detail.setLineTotal(new Money(rs.getBigDecimal("LINETOTAL")));
+            detail.setOrderId(rs.getLong("ORDERID"));
 
             return detail;
         }
@@ -108,7 +138,8 @@ public class OrderDao {
             parameters.add("QUANTITY", detail.getQuantity());
             parameters.add("UNITPRICE", detail.getUnitPrice().asBigDecimal());
             parameters.add("LINETOTAL", detail.getLineTotal().asBigDecimal());
-            
+            parameters.add("ORDERID", detail.getOrderId());
+
             return parameters;
         }
     }

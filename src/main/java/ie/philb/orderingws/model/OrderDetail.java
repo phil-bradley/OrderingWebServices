@@ -16,14 +16,16 @@ public class OrderDetail implements Serializable {
     private Money unitPrice;
     private Money lineTotal;
     private Long id;
+    private Long orderId;
 
-    public OrderDetail(String skuCode, String description, int quantity, Money unitPrice, Money lineTotal, Long id) {
+    public OrderDetail(String skuCode, String description, int quantity, Money unitPrice, Money lineTotal, Long id, Long orderId) {
         this.skuCode = skuCode;
         this.description = description;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.lineTotal = lineTotal;
         this.id = id;
+        this.orderId = orderId;
     }
 
     public OrderDetail() {
@@ -77,16 +79,24 @@ public class OrderDetail implements Serializable {
         this.id = id;
     }
 
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 37 * hash + Objects.hashCode(this.skuCode);
-        hash = 37 * hash + Objects.hashCode(this.description);
-        hash = 37 * hash + this.quantity;
-        hash = 37 * hash + Objects.hashCode(this.unitPrice);
-        hash = 37 * hash + Objects.hashCode(this.lineTotal);
-        hash = 37 * hash + Objects.hashCode(this.id);
-
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.skuCode);
+        hash = 53 * hash + Objects.hashCode(this.description);
+        hash = 53 * hash + this.quantity;
+        hash = 53 * hash + Objects.hashCode(this.unitPrice);
+        hash = 53 * hash + Objects.hashCode(this.lineTotal);
+        hash = 53 * hash + Objects.hashCode(this.id);
+        hash = 53 * hash + Objects.hashCode(this.orderId);
         return hash;
     }
 
@@ -117,12 +127,15 @@ public class OrderDetail implements Serializable {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
+        if (!Objects.equals(this.orderId, other.orderId)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "OrderDetail{" + "skuCode=" + skuCode + ", description=" + description + ", quantity=" + quantity + ", unitPrice=" + unitPrice + ", lineTotal=" + lineTotal + ", lineId=" + id + '}';
+        return "OrderDetail{" + "skuCode=" + skuCode + ", description=" + description + ", quantity=" + quantity + ", unitPrice=" + unitPrice + ", lineTotal=" + lineTotal + ", id=" + id + ", orderId=" + orderId + '}';
     }
 
 }
