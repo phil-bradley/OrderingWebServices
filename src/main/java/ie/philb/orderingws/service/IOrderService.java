@@ -5,16 +5,19 @@
  */
 package ie.philb.orderingws.service;
 
-import ie.philb.orderingws.model.Currency;
+import ie.philb.orderingws.model.Order;
 import java.util.List;
 
 /**
  *
  * @author philb
  */
-public interface ICurrencyService {
+public interface IOrderService {
 
-    public List<Currency> getCurrencies() throws ServiceException;
+    public Order getOrder(Long id) throws ServiceException;
 
-    public Currency getCurrency(String code) throws ServiceException;
+    public List<Order> getOrdersByBuyer(Long buyerId) throws ServiceException;
+
+    public Order save(Order order) throws ServiceException;
+
 }

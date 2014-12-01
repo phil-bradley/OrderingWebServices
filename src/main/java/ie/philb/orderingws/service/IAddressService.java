@@ -14,13 +14,13 @@ import java.util.List;
  */
 public interface IAddressService {
 
-    public List<Address> list() throws ServiceException;
+    public List<Address> listAddresses() throws ServiceException;
 
-    public Address get(Long id) throws ServiceException;
+    public Address getAddress(Long id) throws ServiceException;
 
-    public int delete(Long id) throws ServiceException;
+    public int deleteAddress(Long id) throws ServiceException;
 
-    public long create(Address country) throws ServiceException;
+    public long createAddress(Address address) throws ServiceException;
 
-    public int update(Address country) throws ServiceException;
+    public int updateAddress(Address address) throws ServiceException;
 }

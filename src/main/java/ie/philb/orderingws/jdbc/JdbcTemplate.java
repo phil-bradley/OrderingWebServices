@@ -455,6 +455,8 @@ public class JdbcTemplate {
         normalisedSql = normalisedSql.replace("(", " ( ");
         return normalisedSql;
     }
+    
+    
 
     class UpdateResponseBean {
 

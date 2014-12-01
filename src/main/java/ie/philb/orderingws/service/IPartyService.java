@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface IPartyService {
 
-    public List<Party> list() throws ServiceException;
+    public List<Party> getParties() throws ServiceException;
 
-    public Party get(Long id) throws ServiceException;
+    public Party getParty(Long id) throws ServiceException;
 }

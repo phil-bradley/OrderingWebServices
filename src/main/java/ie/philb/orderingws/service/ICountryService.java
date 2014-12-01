@@ -14,14 +14,14 @@ import java.util.List;
  */
 public interface ICountryService {
 
-    public List<Country> list() throws ServiceException;
+    public List<Country> listCountries() throws ServiceException;
 
-    public Country get(Long id) throws ServiceException;
+    public Country getCountryById(Long id) throws ServiceException;
 
-    public int delete(Long id) throws ServiceException;
+    public int deleteCountry(Long id) throws ServiceException;
 
-    public long create(Country country) throws ServiceException;
+    public long createCountry(Country country) throws ServiceException;
 
-    public int update(Country country) throws ServiceException;
+    public int updateCountry(Country country) throws ServiceException;
 
 }
