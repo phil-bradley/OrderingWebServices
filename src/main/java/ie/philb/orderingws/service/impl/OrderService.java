@@ -65,11 +65,21 @@ public class OrderService extends DefaultService {
         return orders;
     }
 
-    public Order save(Order order) throws ServiceException {
+    public Order createOrder(Long buyerId) throws ServiceException {
+        try {
+            Long orderId = orderDao.createOrder(buyerId);
+            Order order = orderDao.getHeader(orderId);
+            return order;
+        } catch (DaoException | NoSuchEntityDaoException dx) {
+            throw new ServiceException("Failed to create order", dx);
+        }
+    }
+
+    public Order saveOrder(Order order) throws ServiceException {
 
         try {
             if (order.getId() == 0) {
-                Long orderId = orderDao.createOrder();
+                Long orderId = orderDao.createOrder(order.getBuyer().getId());
                 order.setId(orderId);
 
             }

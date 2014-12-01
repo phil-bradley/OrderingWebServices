@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -343,6 +344,12 @@ public class JdbcTemplate {
                 if (parameter instanceof StringJdbcParameter) {
                     StringJdbcParameter sdp = (StringJdbcParameter) parameter;
                     ps.setString(index, sdp.getValue());
+                }
+                
+                if (parameter instanceof DateJdbcParameter) {
+                    DateJdbcParameter ddp = (DateJdbcParameter) parameter;
+                    Timestamp ts = new Timestamp(ddp.getValue().getTime());
+                    ps.setTimestamp(index, ts);
                 }
             }
 

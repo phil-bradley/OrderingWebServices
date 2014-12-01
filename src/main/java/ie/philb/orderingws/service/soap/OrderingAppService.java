@@ -8,6 +8,7 @@ package ie.philb.orderingws.service.soap;
 import ie.philb.orderingws.model.Address;
 import ie.philb.orderingws.model.Country;
 import ie.philb.orderingws.model.Currency;
+import ie.philb.orderingws.model.Money;
 import ie.philb.orderingws.model.Order;
 import ie.philb.orderingws.model.Party;
 import ie.philb.orderingws.model.Product;
@@ -53,6 +54,11 @@ public class OrderingAppService implements
         orderService = new OrderService();
     }
 
+    // Just here for WSDL parser
+    public Money getMoneyValue() {
+        return new Money("1.23");
+    }
+    
     @Override
     public List<Address> listAddresses() throws ServiceException {
         return addressService.listAddresses();
@@ -149,8 +155,13 @@ public class OrderingAppService implements
     }
 
     @Override
-    public Order save(Order order) throws ServiceException {
-        return orderService.save(order);
+    public Order saveOrder(Order order) throws ServiceException {
+        return orderService.saveOrder(order);
+    }
+
+    @Override
+    public Order createOrder(Long buyerId) throws ServiceException {
+        return orderService.createOrder(buyerId);
     }
 
 }

@@ -110,14 +110,14 @@ public class OrderDao {
         }
     }
 
-    public Long createOrder() throws DaoException {
+    public Long createOrder(Long buyerId) throws DaoException {
 
         try {
             JdbcParameterSet params = new JdbcParameterSet();
-
             params.add("CREATED", new Date());
+            params.add("BUYERID", buyerId);
 
-            Long detailId = getJdbcTemplate().createEntity("order", params);
+            Long detailId = getJdbcTemplate().createEntity("orderheader", params);
             return detailId;
         } catch (JdbcException jdx) {
             throw new DaoException("Failed to create order", jdx);

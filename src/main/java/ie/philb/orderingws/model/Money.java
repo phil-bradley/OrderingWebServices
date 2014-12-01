@@ -42,6 +42,14 @@ public class Money {
         this.value = new BigDecimal(s);
     }
 
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public void setValue(BigDecimal value) {
+        this.value = value;
+    }
+
     public boolean isZero() {
         return (value.compareTo(BigDecimal.ZERO) == 0);
     }
@@ -173,7 +181,7 @@ public class Money {
     public Money divide(Double b) {
         return divide(new Money(b));
     }
-    
+
     public BigDecimal asBigDecimal() {
         return value;
     }

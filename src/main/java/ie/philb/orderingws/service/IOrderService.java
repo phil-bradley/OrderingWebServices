@@ -18,6 +18,8 @@ public interface IOrderService {
 
     public List<Order> getOrdersByBuyer(Long buyerId) throws ServiceException;
 
-    public Order save(Order order) throws ServiceException;
+    public Order saveOrder(Order order) throws ServiceException;
+    
+    public Order createOrder(Long buyerId) throws ServiceException;
 
 }
