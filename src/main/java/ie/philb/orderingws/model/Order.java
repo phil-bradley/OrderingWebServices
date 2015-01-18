@@ -20,7 +20,7 @@ public class Order implements Serializable {
     private Date created;
     private Date submitted;
     private Party buyer;
-    private final List<OrderDetail> detail = new ArrayList<>();
+    private final List<OrderDetail> details = new ArrayList<>();
 
     public Order(Long id, Date created, Date submitted, Party buyer) {
         this.id = id;
@@ -64,13 +64,13 @@ public class Order implements Serializable {
         this.buyer = buyer;
     }
 
-    public List<OrderDetail> getDetail() {
-        return detail;
+    public List<OrderDetail> getDetails() {
+        return details;
     }
 
-    public void setDetail(List<OrderDetail> detail) {
-        this.detail.clear();
-        this.detail.addAll(detail);
+    public void setDetails(List<OrderDetail> details) {
+        this.details.clear();
+        this.details.addAll(details);
     }
 
 }

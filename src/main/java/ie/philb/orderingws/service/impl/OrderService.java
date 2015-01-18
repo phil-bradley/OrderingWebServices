@@ -15,11 +15,24 @@ import ie.philb.orderingws.model.Party;
 import ie.philb.orderingws.service.ServiceException;
 import static ie.philb.orderingws.service.impl.DefaultService.logger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Queue;
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.JMSContext;
 import javax.jws.WebService;
 
 @WebService(serviceName = "OrderService")
 public class OrderService extends DefaultService {
+
+    @Resource(mappedName = "jms/testQueueConnectionFactory")
+    private static ConnectionFactory connectionFactory;
+
+    @Resource(mappedName = "jms/testQueue")
+    private Queue queue;
 
     private final PartyDao partyDao;
     private final OrderDao orderDao;
@@ -78,27 +91,47 @@ public class OrderService extends DefaultService {
     public Order saveOrder(Order order) throws ServiceException {
 
         try {
-            if (order.getId() == 0) {
+            if (order.getId() == null || 0 == order.getId()) {
                 Long orderId = orderDao.createOrder(order.getBuyer().getId());
                 order.setId(orderId);
 
             }
 
-            for (OrderDetail detail : order.getDetail()) {
-                if (detail.getId() == 0) {
+            for (OrderDetail detail : order.getDetails()) {
+
+                if (detail.getId() == null || detail.getId() == 0) {
                     Long detailId = orderDao.createDetail();
                     detail.setId(detailId);
-                } else {
-                    orderDao.updateDetail(detail);
                 }
+
+                detail.setOrderId(order.getId());
+                orderDao.updateDetail(detail);
             }
 
-            return order;
+            Order updated = getOrder(order.getId());
+
+            if (connectionFactory == null) {
+                logger.info("Failed to create connection factory");
+            } else {
+
+                logger.info("Creating JMS context");
+                JMSContext jmsContext = connectionFactory.createContext();
+                logger.info("Done");
+
+                if (jmsContext == null) {
+                    logger.info("Failed to create JMS context");
+                } else {
+                    logger.info("Sending JMS message");
+                    jmsContext.createProducer().send((Destination) queue, "Hello " + new Date().toGMTString());
+                    logger.info("Sent JMS message");
+
+                }
+            }
+            return updated;
 
         } catch (DaoException | NoSuchEntityDaoException dx) {
             throw new ServiceException("Failed to save order", dx);
         }
-
     }
 
 }

@@ -42,7 +42,7 @@ public class OrderDao {
         Order order = getHeader(id);
 
         List<OrderDetail> details = getOrderDetails(id);
-        order.getDetail().addAll(details);
+        order.getDetails().addAll(details);
 
         return order;
     }
@@ -76,7 +76,7 @@ public class OrderDao {
             for (Order order : orders) {
                 for (OrderDetail detail : details) {
                     if (Objects.equals(detail.getOrderId(), order.getId())) {
-                        order.getDetail().add(detail);
+                        order.getDetails().add(detail);
                     }
                 }
             }
@@ -90,7 +90,10 @@ public class OrderDao {
 
     private List<OrderDetail> getOrderDetails(Long orderId) throws DaoException {
         try {
-            List<OrderDetail> orderDetails = getJdbcTemplate().queryResultList("SELECT * FROM orderdetail WHERE orderid = :ORDERID", orderDetailMapper);
+            JdbcParameterSet params = new JdbcParameterSet();
+            params.add("ORDERID", orderId);
+            
+            List<OrderDetail> orderDetails = getJdbcTemplate().queryResultList("SELECT * FROM orderdetail WHERE orderid = :ORDERID", params, orderDetailMapper);
             return orderDetails;
         } catch (JdbcException jdx) {
             throw new DaoException("Failed to get order details", jdx);
